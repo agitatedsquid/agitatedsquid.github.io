@@ -1,0 +1,8 @@
+<script>
+const months = ["January", "February", "March", "April", "May", "June", "July"];
+
+const random = Math.floor(Math.random() * months.length);
+document.getElementById("text").val((random, months[random]));
+</script>
+
+<div id="text"></div>
