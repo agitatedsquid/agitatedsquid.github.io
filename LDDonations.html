@@ -1,19 +1,85 @@
-<script>
-   function getData() {
-      const url = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
-    fetch(url, {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            mode: 'no-cors',
-        })
-       .then(res => res.text())
-        .then(data => {
-            console.log(data);
-        })
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Total</title>
+    <style>
+        body {
+            width: 1920px;
+            height: 1080px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        #donationsTotal {
+            color: red;
+            background-color: black;
+            font-size: 2em;
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="donationsTotal">Loading...</div>
 
-  getData();
-</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            var targetUrl = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
+            var totalSum = 0;
 
-<div id="donationsTotal"></div>
+            function fetchDonations(offset) {
+                $.ajax({
+                    url: proxyUrl + targetUrl,
+                    method: "GET",
+                    dataType: "json",
+                    data: {
+                        limit: 100,
+                        offset: offset
+                    },
+                    success: function(data) {
+                        if (data && data.references && data.references.donations && Array.isArray(data.references.donations)) {
+                            let batchSum = 0;
+                            data.references.donations.forEach(function(donation) {
+                                batchSum += donation.amount;
+                            });
+                            totalSum += batchSum;
+                            console.log("Fetched donations from offset " + offset + ": Batch sum = " + batchSum + ", Total sum = " + totalSum);
+
+                            // Continue fetching if there are more donations and offset is less than 1100
+                            if (offset + 100 < 300) {
+                                fetchDonations(offset + 100);
+                            } else {
+                                $("#donationsTotal").text("Total raised: $" + totalSum);
+                                console.log("Total raised: $", totalSum);
+                            }
+                        } else {
+                            console.error("Unexpected JSON structure");
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error fetching data: ", error);
+                    }
+                });
+            }
+
+            function updateDonationsTotal() {
+                totalSum = 0; // Reset totalSum for new calculation
+                fetchDonations(0);
+            }
+
+            // Start fetching with an initial offset of 0 and repeat every 2 minutes (120000 milliseconds)
+            updateDonationsTotal();
+            setInterval(updateDonationsTotal, 120000);
+        });
+    </script>
+</body>
+</html>
