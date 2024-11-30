@@ -3,6 +3,7 @@ async function getData() {
   const url = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
   try {
     const response = await fetch(url);
+    debugger;
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
