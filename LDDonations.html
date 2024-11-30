@@ -37,14 +37,11 @@
             var totalSum = 0;
 
             function fetchDonations(offset) {
+                var uniqueUrl = proxyUrl + targetUrl + '?limit=100&offset=' + offset + '&_=' + new Date().getTime(); // Added timestamp
                 $.ajax({
-                    url: proxyUrl + targetUrl,
+                    url: uniqueUrl,
                     method: "GET",
                     dataType: "json",
-                    data: {
-                        limit: 100,
-                        offset: offset
-                    },
                     headers: {
                         'x-cors-api-key': 'temp_718314afdebdbcc17f2f8b55cb6e2e98' // Replace 'your-api-key-here' with the actual API key
                     },
@@ -57,7 +54,7 @@
                             totalSum += batchSum;
                             console.log("Fetched donations from offset " + offset + ": Batch sum = " + batchSum + ", Total sum = " + totalSum);
 
-                            // Continue fetching if there are more donations and offset is less than 1100
+                            // Continue fetching if there are more donations and offset is less than 300
                             if (offset + 100 < 300) {
                                 fetchDonations(offset + 100);
                             } else {
