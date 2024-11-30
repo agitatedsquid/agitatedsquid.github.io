@@ -32,20 +32,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            var proxyUrl = "https://proxy.cors.sh/";
-            var targetUrl = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
+            var targetUrl = "http://135.181.199.217:3000/api/donations";
             var totalSum = 0;
 
             function fetchDonations(offset) {
-                var uniqueUrl = proxyUrl + targetUrl + '?limit=100&offset=' + offset + '&_=' + new Date().getTime(); // Added timestamp
+                var uniqueUrl = targetUrl + '?limit=100&offset=' + offset + '&_=' + new Date().getTime(); // Added timestamp
+                console.log("Making request to: " + uniqueUrl);
                 $.ajax({
                     url: uniqueUrl,
                     method: "GET",
                     dataType: "json",
-                    headers: {
-                        'x-cors-api-key': 'temp_718314afdebdbcc17f2f8b55cb6e2e98' // Replace 'your-api-key-here' with the actual API key
-                    },
                     success: function(data) {
+                        console.log("Received data: ", data);
                         if (data && data.references && data.references.donations && Array.isArray(data.references.donations)) {
                             let batchSum = 0;
                             data.references.donations.forEach(function(donation) {
@@ -65,8 +63,10 @@
                             console.error("Unexpected JSON structure");
                         }
                     },
-                    error: function(error) {
+                    error: function(xhr, status, error) {
                         console.error("Error fetching data: ", error);
+                        console.log("Response status: ", status);
+                        console.log("Response: ", xhr.responseText);
                     }
                 });
             }
@@ -78,7 +78,7 @@
 
             // Start fetching with an initial offset of 0 and repeat every 2 minutes (120000 milliseconds)
             updateDonationsTotal();
-            setInterval(updateDonationsTotal, 60000);
+            setInterval(updateDonationsTotal, 120000);
         });
     </script>
 </body>
