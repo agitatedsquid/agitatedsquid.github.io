@@ -7,8 +7,9 @@
             },
             mode: 'no-cors',
         })
-        .then(res => {
-            console.log(res);
+       .then(res => res.text())
+        .then(data => {
+            console.log(data);
         })
     }
 
