@@ -1,13 +1,13 @@
 <script>
-  async function getData() {
+   function getData() {
       const url = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
       try {
-        const response = await fetch(url, 
+        const response =  fetch(url, 
         {mode: 'no-cors',}
        )
         debugger;
     
-        const json = await response.json();
+        const json = response.json();
         console.log(json);
       } catch (error) {
         console.error(error.message);
