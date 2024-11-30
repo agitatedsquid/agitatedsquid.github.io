@@ -1,16 +1,16 @@
 <script>
    function getData() {
       const url = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
-      try {
-        fetch(url, 
-        {mode: 'no-cors',}
-       ).then(res => res.json())
+    fetch(url, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            mode: 'no-cors',
+        })
+        .then(res => res.json())
         .then(res => {
             console.log(res);
         })
-      } catch (error) {
-        console.error(error.message);
-      }
     }
 
   getData();
