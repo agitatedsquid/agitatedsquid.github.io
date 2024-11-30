@@ -1,11 +1,18 @@
 <script>
-const api = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
-  fetch(api, 
-        {mode: 'no-cors',}
-       )
-  .then(data => {
-   console.log(data); 
-  })
+async function getData() {
+  const url = "https://gateway.gofundme.com/web-gateway/v1/feed/lds-fight-against-prostate-cancer/donations";
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    console.log(json);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 </script>
 
 <div id="donationsTotal"></div>
